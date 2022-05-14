@@ -1,14 +1,20 @@
 import React from 'react';
-import { Center, Box } from '@chakra-ui/react';
+import { Container, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
 
 const FrontPage = () => {
   return (
-    <Center>
-      <Box bgColor='blue.500' p={5} borderRadius={5}>
-        Display feature specific intra links, which can help Hasura users to
-        have a visual understanding to the documentation.
-      </Box>
-    </Center>
+    <Container>
+      <VStack>
+        <ul>
+          <li>
+            <Link
+              href={'/login'}
+            >{`Feature One => Login and Signup form`}</Link>
+          </li>
+        </ul>
+      </VStack>
+    </Container>
   );
 };
 
