@@ -32,7 +32,9 @@ const Login = () => {
       <form onSubmit={formik.handleSubmit}>
         <VStack spacing='5' py={{ base: '4' }}>
           <Heading>{showSignup ? 'Signup' : 'Login'}</Heading>
-          <FormControl isInvalid={formik.errors.username}>
+          <FormControl
+            isInvalid={formik.errors.username && formik.touched.username}
+          >
             <FormLabel>Username</FormLabel>
             <Input
               type='text'
@@ -40,11 +42,14 @@ const Login = () => {
               placeholder='Choose an username of your choice'
               onChange={formik.handleChange}
               value={formik.values.username}
+              onBlur={formik.handleBlur}
             />
             <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={formik.errors.password}>
+          <FormControl
+            isInvalid={formik.errors.password && formik.touched.password}
+          >
             <FormLabel>Password</FormLabel>
             <Input
               type='password'
@@ -52,12 +57,17 @@ const Login = () => {
               placeholder='Choose a strong password'
               onChange={formik.handleChange}
               value={formik.values.password}
+              onBlur={formik.handleBlur}
             />
             <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
           </FormControl>
 
           {showSignup && (
-            <FormControl isInvalid={formik.errors.confirmPassword}>
+            <FormControl
+              isInvalid={
+                formik.errors.confirmPassword && formik.touched.confirmPassword
+              }
+            >
               <FormLabel>Confirm Password</FormLabel>
               <Input
                 type='password'
@@ -65,6 +75,7 @@ const Login = () => {
                 placeholder='Conform your password'
                 onChange={formik.handleChange}
                 value={formik.values.confirmPassword}
+                onBlur={formik.handleBlur}
               />
               <FormErrorMessage>
                 {formik.errors.confirmPassword}
