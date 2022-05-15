@@ -11,28 +11,45 @@ import {
   Text,
   Container,
 } from '@chakra-ui/react';
-import { useFormik } from 'formik';
+import { Field, Formik, useFormik } from 'formik';
+import * as yup from 'yup';
 
-import {
-  initialValues,
-  validationSchema,
-  onSubmit,
-} from '@/components/login/formik';
-
-/*
-onChange={formik.handleChange}
-value={formik.values.username}
-onBlur={formik.handleBlur}
-
-or
-
-{...formik.getFieldProps('username')}
-
-*/
+import FormikInput from '@/components/shared/FormikInput';
 
 const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
-  const formik = useFormik({ initialValues, validationSchema, onSubmit });
+
+  const initialValues = {
+    username: '',
+    password: '',
+    confirmPassword: '',
+  };
+
+  const validationSchema = yup.object().shape({
+    username: yup
+      .string()
+      .required('Username cannot be empty')
+      .min(5, 'username is too short'),
+    password: yup
+      .string()
+      .required('Password cannot be empty')
+      .min(8, 'password must be at least 8 characters long'),
+    ...(showSignup
+      ? {
+          confirmPassword: yup
+            .string()
+            .required('Confirm Password cannot be empty')
+            .oneOf([yup.ref('password'), null], 'Password must match'),
+        }
+      : {}),
+  });
+
+  const onSubmit = (values, actions) => {
+    console.log(values, actions);
+    actions.resetForm();
+  };
+
+  console.log(initialValues, validationSchema);
 
   return (
     <Container
@@ -40,77 +57,64 @@ const Login = () => {
       py={{ base: '12', md: '24' }}
       px={{ base: '0', sm: '8' }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <VStack spacing='5' py={{ base: '4' }}>
-          <Heading>{showSignup ? 'Signup' : 'Login'}</Heading>
-          <FormControl
-            isInvalid={formik.errors.username && formik.touched.username}
-          >
-            <FormLabel>Username</FormLabel>
-            <Input
-              type='text'
-              name='username'
-              placeholder='Choose an username of your choice'
-              {...formik.getFieldProps('username')}
-            />
-            <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
-          </FormControl>
-
-          <FormControl
-            isInvalid={formik.errors.password && formik.touched.password}
-          >
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              name='password'
-              placeholder='Choose a strong password'
-              {...formik.getFieldProps('password')}
-            />
-            <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
-          </FormControl>
-
-          {showSignup && (
-            <FormControl
-              isInvalid={
-                formik.errors.confirmPassword && formik.touched.confirmPassword
-              }
-            >
-              <FormLabel>Confirm Password</FormLabel>
-              <Input
-                type='password'
-                name='confirmPassword'
-                placeholder='Conform your password'
-                {...formik.getFieldProps('confirmPassword')}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        enableReinitialize={true}
+      >
+        {({ errors, handleSubmit, touched, isSubmitting }) => (
+          <form onSubmit={handleSubmit}>
+            <VStack spacing='5' py={{ base: '4' }}>
+              <Heading>{showSignup ? 'Signup' : 'Login'}</Heading>
+              <FormikInput
+                label='Username'
+                name='username'
+                type='text'
+                placeholder='Enter your username'
               />
-              <FormErrorMessage>
-                {formik.errors.confirmPassword}
-              </FormErrorMessage>
-            </FormControl>
-          )}
-        </VStack>
+              <FormikInput
+                label='Password'
+                name='password'
+                type='password'
+                placeholder='Enter your password'
+              />
 
-        <HStack justify='space-between'>
-          <HStack spacing='1'>
-            <Text color='muted'>
-              {showSignup
-                ? 'Already have an Account'
-                : `Don't have an account?`}
-            </Text>
+              {showSignup && (
+                <FormikInput
+                  label='Confirm Password'
+                  name='confirmPassword'
+                  type='password'
+                  placeholder='Confirm your password'
+                />
+              )}
+            </VStack>
 
-            <Button
-              variant='link'
-              colorScheme='blue'
-              onClick={() => setShowSignup((showSignup) => !showSignup)}
-            >
-              {showSignup ? 'Login' : 'Signup'}
-            </Button>
-          </HStack>
+            <HStack justify='space-between'>
+              <HStack spacing='1'>
+                <Text color='muted'>
+                  {showSignup
+                    ? 'Already have an Account'
+                    : `Don't have an account?`}
+                </Text>
 
-          <Button type='submit' variant='outline'>
-            {showSignup ? 'Signup' : 'Login'}
-          </Button>
-        </HStack>
-      </form>
+                <Button
+                  variant='link'
+                  colorScheme='blue'
+                  onClick={() => setShowSignup((showSignup) => !showSignup)}
+                  disabled={isSubmitting}
+                >
+                  {showSignup ? 'Login' : 'Signup'}
+                </Button>
+              </HStack>
+
+              <Button type='submit' variant='outline'>
+                {showSignup ? 'Signup' : 'Login'}
+              </Button>
+            </HStack>
+          </form>
+        )}
+      </Formik>
     </Container>
   );
 };
