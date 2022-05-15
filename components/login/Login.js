@@ -19,6 +19,17 @@ import {
   onSubmit,
 } from '@/components/login/formik';
 
+/*
+onChange={formik.handleChange}
+value={formik.values.username}
+onBlur={formik.handleBlur}
+
+or
+
+{...formik.getFieldProps('username')}
+
+*/
+
 const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
@@ -40,9 +51,7 @@ const Login = () => {
               type='text'
               name='username'
               placeholder='Choose an username of your choice'
-              onChange={formik.handleChange}
-              value={formik.values.username}
-              onBlur={formik.handleBlur}
+              {...formik.getFieldProps('username')}
             />
             <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
           </FormControl>
@@ -55,9 +64,7 @@ const Login = () => {
               type='password'
               name='password'
               placeholder='Choose a strong password'
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              onBlur={formik.handleBlur}
+              {...formik.getFieldProps('password')}
             />
             <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
           </FormControl>
@@ -73,9 +80,7 @@ const Login = () => {
                 type='password'
                 name='confirmPassword'
                 placeholder='Conform your password'
-                onChange={formik.handleChange}
-                value={formik.values.confirmPassword}
-                onBlur={formik.handleBlur}
+                {...formik.getFieldProps('confirmPassword')}
               />
               <FormErrorMessage>
                 {formik.errors.confirmPassword}
