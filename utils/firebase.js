@@ -1,12 +1,5 @@
-// Intentionally removing all Analytics related to firebase.
 import { initializeApp } from 'firebase/app';
-// import { getAnalytics } from 'firebase/analytics';
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -18,8 +11,8 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
+export const auth = getAuth(app);
 
-export default app;
+// export default app;
+// rather than exporting app, I'm exporting auth

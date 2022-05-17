@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import {
   Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
   Heading,
   HStack,
-  Input,
   VStack,
   Text,
   Container,
 } from '@chakra-ui/react';
-import { Field, Formik, useFormik } from 'formik';
+import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import FormikInput from '@/components/shared/FormikInput';
 
+import { useAuth } from '@/utils/context/AuthContext';
+
 const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
 
+  const { register, login, logout, loggedInUser } = useAuth();
+
   const initialValues = {
-    username: '',
+    email: '',
     password: '',
     confirmPassword: '',
   };
 
   const validationSchema = yup.object().shape({
-    username: yup
+    email: yup
       .string()
-      .required('Username cannot be empty')
-      .min(5, 'username is too short'),
+      .email('enter a valid email address')
+      .required('email cannot be empty'),
     password: yup
       .string()
       .required('Password cannot be empty')
@@ -45,11 +45,13 @@ const Login = () => {
   });
 
   const onSubmit = (values, actions) => {
-    console.log(values, actions);
+    const { email, password } = values;
+    console.log({ email, password }, actions);
+
+    showSignup ? register(email, password) : login(email, password);
+
     actions.resetForm();
   };
-
-  console.log(initialValues, validationSchema);
 
   return (
     <Container
@@ -63,16 +65,17 @@ const Login = () => {
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {({ errors, handleSubmit, touched, isSubmitting }) => (
+        {({ handleSubmit, isSubmitting }) => (
           <form onSubmit={handleSubmit}>
             <VStack spacing='5' py={{ base: '4' }}>
               <Heading>{showSignup ? 'Signup' : 'Login'}</Heading>
               <FormikInput
-                label='Username'
-                name='username'
-                type='text'
-                placeholder='Enter your username'
+                label='Email'
+                name='email'
+                type='email'
+                placeholder='Enter your email'
               />
+
               <FormikInput
                 label='Password'
                 name='password'
@@ -115,6 +118,13 @@ const Login = () => {
           </form>
         )}
       </Formik>
+
+      {loggedInUser?.email && (
+        <>
+          {loggedInUser?.email}
+          <Button onClick={() => logout()}>Sign Out</Button>
+        </>
+      )}
     </Container>
   );
 };
