@@ -2,8 +2,8 @@ import React from 'react';
 
 import Login from '@/components/login/Login';
 
-const index = () => {
+const LoginIndex = () => {
   return <Login />;
 };
 
-export default index;
+export default LoginIndex;
