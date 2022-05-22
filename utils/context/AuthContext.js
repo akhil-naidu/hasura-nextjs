@@ -31,7 +31,11 @@ const login = async (email, password) => {
 };
 
 const logout = async () => {
-  await signOut(auth);
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // Exporting useAuth Custom Hook and AuthProvider
@@ -41,7 +45,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [loggedInUser, setLoggedInUser] = useState({});
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const value = {
     register,
