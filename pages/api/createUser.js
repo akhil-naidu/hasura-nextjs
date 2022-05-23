@@ -30,24 +30,44 @@ try {
 
 const createUser = async (req, res) => {
   const { email, password, displayName } = req.body.input.credentials;
-
-  const user = await admin.auth().createUser({
-    email: email,
-    password: password,
-    displayName: displayName,
+  return new Promise((resolve, reject) => {
+    admin
+      .auth()
+      .createUser({
+        email: email,
+        password: password,
+        displayName: displayName,
+      })
+      .then((user) => {
+        admin
+          .auth()
+          .setCustomUserClaims(user.uid, {
+            'https://hasura.io/jwt/claims': {
+              'x-hasura-allowed-roles': ['user'],
+              'x-hasura-default-role': 'user',
+              'x-hasura-user-id': user.uid,
+            },
+          })
+          .then(() => {
+            res.status(200).json({
+              id: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+            });
+            resolve();
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(201).json({ error: 'in second', message: error });
+            resolve();
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(201).json({ error: 'in first', message: error });
+        resolve();
+      });
   });
-
-  await admin.auth().setCustomUserClaims(user.uid, {
-    'https://hasura.io/jwt/claims': {
-      'x-hasura-allowed-roles': ['user'],
-      'x-hasura-default-role': 'user',
-      'x-hasura-user-id': user.uid,
-    },
-  });
-
-  res
-    .status(200)
-    .json({ id: user.uid, email: user.email, displayName: user.displayName });
 };
 
 export default createUser;
