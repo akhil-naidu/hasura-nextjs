@@ -1,4 +1,32 @@
-import admin from '@/utils/firebaseAdmin';
+import * as admin from 'firebase-admin';
+
+const firebaseAdminConfig = {
+  type: process.env.FB_TYPE,
+  project_id: process.env.FB_PROJECT_ID,
+  private_key_id: process.env.FB_PRIVATE_KEY_ID,
+  private_key: process.env.FB_PRIVATE_KEY,
+  client_email: process.env.FB_CLIENT_EMAIL,
+  client_id: process.env.FB_CLIENT_ID,
+  auth_uri: process.env.FB_AUTH_URI,
+  token_uri: process.env.FB_TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.FB_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.FB_CLIENT_CERT_URL,
+};
+
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(firebaseAdminConfig),
+  });
+  console.log('Initialized.');
+} catch (error) {
+  /*
+   * We skip the "already exists" message which is
+   * not an actual error when we're hot-reloading.
+   */
+  if (!/already exists/u.test(error.message)) {
+    console.error('Firebase admin initialization error', error.stack);
+  }
+}
 
 const createUser = async (req, res) => {
   const { email, password, displayName } = req.body.input.credentials;
@@ -9,15 +37,13 @@ const createUser = async (req, res) => {
     displayName: displayName,
   });
 
-  // await admin.auth().setCustomUserClaims(user.uid, {
-  //   'https://hasura.io/jwt/claims': {
-  //     'x-hasura-allowed-roles': ['user'],
-  //     'x-hasura-default-role': 'user',
-  //     'x-hasura-user-id': user.uid,
-  //   },
-  // });
-
-  console.log(user);
+  await admin.auth().setCustomUserClaims(user.uid, {
+    'https://hasura.io/jwt/claims': {
+      'x-hasura-allowed-roles': ['user'],
+      'x-hasura-default-role': 'user',
+      'x-hasura-user-id': user.uid,
+    },
+  });
 
   res
     .status(200)
