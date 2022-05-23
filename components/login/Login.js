@@ -19,6 +19,8 @@ const Login = () => {
 
   const { register, login, logout, loggedInUser } = useAuth();
 
+  console.log(loggedInUser, loggedInUser?.accessToken);
+
   const initialValues = {
     email: '',
     password: '',
