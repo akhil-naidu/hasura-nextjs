@@ -1,7 +1,6 @@
 const createUser = (req, res) => {
-  res
-    .status(200)
-    .json({ id: 2, email: 'itachi@naruto.com', displayName: 'Itachi Uchiha' });
+  const { email, password, displayName } = req.body.input.credentials;
+  res.status(200).json({ id: 2, email: email, displayName: displayName });
 };
 
 export default createUser;
