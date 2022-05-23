@@ -1,4 +1,4 @@
-import admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 const firebaseAdminConfig = {
   type: process.env.FB_TYPE,
@@ -13,16 +13,16 @@ const firebaseAdminConfig = {
   client_x509_cert_url: process.env.FB_CLIENT_CERT_URL,
 };
 
-try {
-  admin.initializeApp({
-    credential: admin.credential.cert(firebaseAdminConfig),
-  });
-
-  console.log('Initialized.');
-} catch (error) {
-  if (!/already exists/u.test(error.message)) {
-    console.error('Firebase admin initialization error', error.stack);
+(async () => {
+  try {
+    await admin.initializeApp({
+      credential: admin.credential.cert(firebaseAdminConfig),
+    });
+  } catch (error) {
+    if (!/already exists/u.test(error.message)) {
+      console.error('Firebase admin initialization error', error.stack);
+    }
   }
-}
+})();
 
 export default admin;
