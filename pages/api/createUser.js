@@ -4,7 +4,7 @@ const createUser = async (req, res) => {
   const { email, password, displayName } = req.body.input.credentials;
 
   try {
-    const user = await admin.auth().createUser({
+    const { uid, email, displayName } = await admin.auth().createUser({
       email: email,
       password: password,
       displayName: displayName,
@@ -19,13 +19,13 @@ const createUser = async (req, res) => {
     });
 
     return res.status(200).json({
-      id: user.uid,
-      email: user.email,
-      displayName: user.displayName,
+      id: uid,
+      email,
+      displayName,
     });
   } catch (error) {
     return res.status(501).json({
-      error: error,
+      error: error.message,
       location: '/api/createUser was failing',
     });
   }
