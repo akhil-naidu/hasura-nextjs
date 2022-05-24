@@ -1,44 +1,10 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 
 import { auth } from '@/utils/firebase';
+import { register, login, logout } from '@/utils/context/loginFunctions';
 
 const AuthContext = createContext();
-
-const register = async (email, password) => {
-  try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-
-    console.log(user);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const login = async (email, password) => {
-  try {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-
-    console.log(user);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const logout = async () => {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// Exporting useAuth Custom Hook and AuthProvider
 
 export const useAuth = () => {
   return useContext(AuthContext);
