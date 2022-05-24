@@ -30,44 +30,64 @@ try {
 
 const createUser = async (req, res) => {
   const { email, password, displayName } = req.body.input.credentials;
-  return new Promise((resolve, reject) => {
-    admin
-      .auth()
-      .createUser({
-        email: email,
-        password: password,
-        displayName: displayName,
-      })
-      .then((user) => {
-        admin
-          .auth()
-          .setCustomUserClaims(user.uid, {
-            'https://hasura.io/jwt/claims': {
-              'x-hasura-allowed-roles': ['user'],
-              'x-hasura-default-role': 'user',
-              'x-hasura-user-id': user.uid,
-            },
-          })
-          .then(() => {
-            res.status(200).json({
-              id: user.uid,
-              email: user.email,
-              displayName: user.displayName,
-            });
-            resolve();
-          })
-          .catch((error) => {
-            console.error(error);
-            res.status(201).json({ error: 'in second', message: error });
-            resolve();
-          });
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(201).json({ error: 'in first', message: error });
-        resolve();
-      });
+
+  const user = await admin.auth().createUser({
+    email: email,
+    password: password,
+    displayName: displayName,
   });
+
+  await admin.auth().setCustomUserClaims(user.uid, {
+    'https://hasura.io/jwt/claims': {
+      'x-hasura-allowed-roles': ['user'],
+      'x-hasura-default-role': 'user',
+      'x-hasura-user-id': user.uid,
+    },
+  });
+
+  return res.status(200).json({
+    id: user.uid,
+    email: user.email,
+    displayName: user.displayName,
+  });
+  // return new Promise((resolve, reject) => {
+  //   admin
+  //     .auth()
+  //     .createUser({
+  //       email: email,
+  //       password: password,
+  //       displayName: displayName,
+  //     })
+  //     .then((user) => {
+  //       admin
+  //         .auth()
+  // .setCustomUserClaims(user.uid, {
+  //   'https://hasura.io/jwt/claims': {
+  //     'x-hasura-allowed-roles': ['user'],
+  //     'x-hasura-default-role': 'user',
+  //     'x-hasura-user-id': user.uid,
+  //   },
+  // })
+  //         .then(() => {
+  //           res.status(200).json({
+  //             id: user.uid,
+  //             email: user.email,
+  //             displayName: user.displayName,
+  //           });
+  //           resolve();
+  //         })
+  //         .catch((error) => {
+  //           console.error(error);
+  //           res.status(201).json({ error: 'in second', message: error });
+  //           resolve();
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       res.status(201).json({ error: 'in first', message: error });
+  //       resolve();
+  //     });
+  // });
 };
 
 export default createUser;
