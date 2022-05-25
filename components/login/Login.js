@@ -19,8 +19,6 @@ const Login = () => {
 
   const { register, login, logout, loggedInUser } = useAuth();
 
-  console.log(loggedInUser, loggedInUser?.accessToken);
-
   const initialValues = {
     email: '',
     password: '',
@@ -48,12 +46,11 @@ const Login = () => {
 
   const onSubmit = (values, actions) => {
     const { email, password } = values;
-    console.log({ email, password }, actions);
-
     showSignup ? register(email, password) : login(email, password);
 
     actions.resetForm();
   };
+  console.log(loggedInUser.accessToken);
 
   return (
     <Container
