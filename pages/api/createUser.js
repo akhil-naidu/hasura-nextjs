@@ -15,6 +15,7 @@ const createUser = async (req, res) => {
         'x-hasura-allowed-roles': ['user'],
         'x-hasura-default-role': 'user',
         'x-hasura-user-id': user.uid,
+        'x-hasura-id': user.uid,
       },
     });
 

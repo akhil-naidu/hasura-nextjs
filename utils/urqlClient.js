@@ -9,8 +9,8 @@ const client = createClient({
   url: process.env.NEXT_PUBLIC_HASURA_URL,
   exchanges: [dedupExchange, cacheExchange, fetchExchange],
   fetchOptions: () => {
-    const token = '';
-    return token ? { headers: { 'x-hasura-admin-secret': token } } : {};
+    const token = window.localStorage.getItem('accessToken');
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
   },
 });
 
