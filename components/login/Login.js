@@ -50,7 +50,6 @@ const Login = () => {
 
     actions.resetForm();
   };
-  console.log(loggedInUser.accessToken);
 
   return (
     <Container

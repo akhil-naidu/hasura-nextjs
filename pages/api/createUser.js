@@ -1,4 +1,5 @@
 import admin from '@/utils/firebaseAdmin';
+// The reason for using firebase-admin sdk was to add custom claims
 
 const createUser = async (req, res) => {
   const { email, password, displayName } = req.body.input.credentials;
