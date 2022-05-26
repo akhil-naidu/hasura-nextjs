@@ -1,14 +1,9 @@
 // Packages to download apollo-server-micro, micro
 
 import { ApolloServer, gql } from 'apollo-server-micro';
-import admin from '@/utils/firebaseAdmin';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 
-// Since this route is a graphql request, I don't want NextJS trying to parse the body of this API
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import admin from '@/utils/firebaseAdmin';
 
 const typeDefs = gql`
   type UserProfile {
@@ -36,7 +31,13 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  playground: true,
+  introspection: true,
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+});
 
 const startServer = server.start();
 
@@ -48,3 +49,10 @@ const handler = async (req, res) => {
 };
 
 export default handler;
+
+// Since this route is a graphql request, I don't want NextJS trying to parse the body of this API
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
