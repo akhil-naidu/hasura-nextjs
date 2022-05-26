@@ -23,6 +23,7 @@ const register = async (email, password) => {
 const login = async (email, password) => {
   try {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
+    window.localStorage.setItem('accessToken', user.accessToken);
 
     return user;
   } catch (error) {
@@ -33,6 +34,7 @@ const login = async (email, password) => {
 const logout = async () => {
   try {
     await signOut(auth);
+    window.localStorage.removeItem('accessToken');
   } catch (error) {
     console.error(error);
   }

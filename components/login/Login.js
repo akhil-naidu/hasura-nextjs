@@ -18,6 +18,10 @@ const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
 
   const { register, login, logout, loggedInUser } = useAuth();
+  // For registration on user I can directly use the register function from the useAuth() hook,
+  // But that only creates an user in the firebase but not in my Hasura database
+  // So I created an Hasura Action, called createUser which triggers the NextJS function createUser
+  // The createUser Hasura actions return us the user information, by which I like to create an user in Hasura database
 
   const initialValues = {
     email: '',
