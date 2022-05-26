@@ -31,13 +31,22 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  playground: true,
-  introspection: true,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-});
+let server;
+if (process.env.NODE_ENV !== 'production') {
+  server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true,
+    playground: true,
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+  });
+} else {
+  server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true,
+  });
+}
 
 const startServer = server.start();
 
