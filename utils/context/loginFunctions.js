@@ -20,10 +20,10 @@ const register = async (email, password) => {
   }
 };
 
-const login = async (email, password) => {
+const login = async (email, password, backend = false) => {
   try {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
-    window.localStorage.setItem('accessToken', user.accessToken);
+    if (!backend) window.localStorage.setItem('accessToken', user.accessToken);
 
     return user;
   } catch (error) {

@@ -4,7 +4,7 @@ const userLogin = async (req, res) => {
   const { email, password } = req.body.input.credentials;
 
   try {
-    const { accessToken } = await login(email, password);
+    const { accessToken } = await login(email, password, true);
 
     res.status(200).json({ accessToken });
   } catch (error) {
