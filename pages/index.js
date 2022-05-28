@@ -1,6 +1,9 @@
 import Head from 'next/head';
+import { useEffect } from 'react';
+import { useMutation } from 'urql';
 
 import FrontPage from '@/components/index/FrontPage';
+import { UserProfileGQL } from '@/graphql/user';
 
 export default function Home() {
   return (

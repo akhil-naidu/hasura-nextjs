@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Button,
   Heading,
@@ -17,20 +18,23 @@ import { useAuth } from '@/utils/context/AuthContext';
 import { CreateUserGQL, LoginUserGQL, UserProfileGQL } from '@/graphql/user';
 
 const Login = () => {
+  const router = useRouter();
   const [showSignup, setShowSignup] = useState(false);
 
   const [createUserMutationResult, createUserMutation] =
     useMutation(CreateUserGQL);
   const [loginUserMutationResult, loginUserMutation] =
     useMutation(LoginUserGQL);
-  const [userProfileMutationResult, userProfileMutation] =
-    useMutation(UserProfileGQL);
 
   const { logout, loggedInUser, setLoggedInUser } = useAuth();
   // For registration on user I can directly use the register function from the useAuth() hook,
   // But that only creates an user in the firebase but not in my Hasura database
   // So I created an Hasura Action, called createUser which triggers the NextJS function createUser
   // The createUser Hasura actions return us the user information, by which I like to create an user in Hasura database
+
+  if (loggedInUser?.email) {
+    router.push('/');
+  }
 
   const initialValues = {
     email: '',
@@ -82,14 +86,6 @@ const Login = () => {
 
       window.localStorage.setItem('accessToken', loginResult.login.accessToken);
       window.localStorage.setItem('uid', loginResult.login.uid);
-
-      const variablesForUserProfile = { uid: loginResult.login.uid };
-
-      const { data: userDetails } = await userProfileMutation(
-        variablesForUserProfile,
-      );
-
-      setLoggedInUser(userDetails.user_profile);
     } catch (error) {
       console.log(error);
     }
@@ -169,13 +165,6 @@ const Login = () => {
           </form>
         )}
       </Formik>
-
-      {loggedInUser?.email && (
-        <>
-          {loggedInUser?.email}
-          <Button onClick={() => logout()}>Sign Out</Button>
-        </>
-      )}
     </Container>
   );
 };
