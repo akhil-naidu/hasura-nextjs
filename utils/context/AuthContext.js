@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { useMutation } from 'urql';
 
 import { register, login, logout } from '@/utils/context/loginFunctions';
+import { UserProfileGQL } from '@/graphql/user';
 
 const AuthContext = createContext();
 
@@ -15,11 +17,9 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
-    loggedInUser,
     setLoggedInUser,
+    loggedInUser,
   };
-
-  useEffect(() => {}, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

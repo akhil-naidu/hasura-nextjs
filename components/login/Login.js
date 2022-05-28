@@ -14,7 +14,7 @@ import { useMutation } from 'urql';
 import FormikInput from '@/components/shared/FormikInput';
 
 import { useAuth } from '@/utils/context/AuthContext';
-import { CreateUserGQL, LoginUserGQL } from '@/graphql/user';
+import { CreateUserGQL, LoginUserGQL, UserProfileGQL } from '@/graphql/user';
 
 const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
@@ -23,8 +23,10 @@ const Login = () => {
     useMutation(CreateUserGQL);
   const [loginUserMutationResult, loginUserMutation] =
     useMutation(LoginUserGQL);
+  const [userProfileMutationResult, userProfileMutation] =
+    useMutation(UserProfileGQL);
 
-  const { logout, loggedInUser } = useAuth();
+  const { logout, loggedInUser, setLoggedInUser } = useAuth();
   // For registration on user I can directly use the register function from the useAuth() hook,
   // But that only creates an user in the firebase but not in my Hasura database
   // So I created an Hasura Action, called createUser which triggers the NextJS function createUser
@@ -70,13 +72,24 @@ const Login = () => {
   };
 
   const loginUserCustomAction = async (email, password) => {
-    const variables = { credentials: { email, password } };
-    try {
-      const { data } = await loginUserMutation(variables);
-      const { accessToken, uid } = data.login;
+    window.localStorage.clear();
 
-      window.localStorage.setItem('accessToken', accessToken);
-      window.localStorage.setItem('uid', uid);
+    try {
+      const variablesForUserLogin = { credentials: { email, password } };
+      const { data: loginResult } = await loginUserMutation(
+        variablesForUserLogin,
+      );
+
+      window.localStorage.setItem('accessToken', loginResult.login.accessToken);
+      window.localStorage.setItem('uid', loginResult.login.uid);
+
+      const variablesForUserProfile = { uid: loginResult.login.uid };
+
+      const { data: userDetails } = await userProfileMutation(
+        variablesForUserProfile,
+      );
+
+      setLoggedInUser(userDetails.user_profile);
     } catch (error) {
       console.log(error);
     }
