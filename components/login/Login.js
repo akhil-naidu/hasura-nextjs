@@ -9,15 +9,22 @@ import {
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { useMutation } from 'urql';
 
 import FormikInput from '@/components/shared/FormikInput';
 
 import { useAuth } from '@/utils/context/AuthContext';
+import { CreateUserGQL, LoginUserGQL } from '@/graphql/user';
 
 const Login = () => {
   const [showSignup, setShowSignup] = useState(false);
 
-  const { register, login, logout, loggedInUser } = useAuth();
+  const [createUserMutationResult, createUserMutation] =
+    useMutation(CreateUserGQL);
+  const [loginUserMutationResult, loginUserMutation] =
+    useMutation(LoginUserGQL);
+
+  const { logout, loggedInUser } = useAuth();
   // For registration on user I can directly use the register function from the useAuth() hook,
   // But that only creates an user in the firebase but not in my Hasura database
   // So I created an Hasura Action, called createUser which triggers the NextJS function createUser
@@ -48,9 +55,38 @@ const Login = () => {
       : {}),
   });
 
+  const registerUserCustomAction = async (email, password) => {
+    const variables = { credentials: { email, password } };
+
+    try {
+      const { data } = await createUserMutation(variables);
+      console.log(data);
+
+      // send email verification
+      // display a screen to verify his email address
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const loginUserCustomAction = async (email, password) => {
+    const variables = { credentials: { email, password } };
+    try {
+      const { data } = await loginUserMutation(variables);
+      const { accessToken, uid } = data.login;
+
+      window.localStorage.setItem('accessToken', accessToken);
+      window.localStorage.setItem('uid', uid);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onSubmit = (values, actions) => {
     const { email, password } = values;
-    showSignup ? register(email, password) : login(email, password);
+    showSignup
+      ? registerUserCustomAction(email, password)
+      : loginUserCustomAction(email, password);
 
     actions.resetForm();
   };

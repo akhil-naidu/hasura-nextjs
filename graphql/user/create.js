@@ -1,18 +1,8 @@
 import { gql } from 'urql';
 
-const CreateUserMutation = gql`
-  mutation createUser(
-    $email: String!
-    $password: String!
-    $displayName: String
-  ) {
-    create_user(
-      credentials: {
-        email: $email
-        password: $password
-        displayName: $displayName
-      }
-    ) {
+const CreateUserGQL = gql`
+  mutation createUser($credentials: SignupCredentials!) {
+    create_user(credentials: $credentials) {
       id
       email
       displayName
@@ -20,4 +10,4 @@ const CreateUserMutation = gql`
   }
 `;
 
-export default CreateUserMutation;
+export default CreateUserGQL;

@@ -4,9 +4,9 @@ const userLogin = async (req, res) => {
   const { email, password } = req.body.input.credentials;
 
   try {
-    const { accessToken } = await login(email, password, true);
+    const { accessToken, uid } = await login(email, password, true);
 
-    res.status(200).json({ accessToken });
+    res.status(200).json({ accessToken, uid });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
