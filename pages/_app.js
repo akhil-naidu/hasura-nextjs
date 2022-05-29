@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, HStack, Button } from '@chakra-ui/react';
 
 import '../styles/globals.css';
 import { AuthProvider } from '@/utils/context/AuthContext';

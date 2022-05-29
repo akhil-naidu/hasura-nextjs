@@ -1,11 +1,18 @@
-import Head from 'next/head';
 import { useEffect } from 'react';
-import { useMutation } from 'urql';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import FrontPage from '@/components/index/FrontPage';
-import { UserProfileGQL } from '@/graphql/user';
+import { useAuth } from '@/utils/context/AuthContext';
 
 export default function Home() {
+  const router = useRouter();
+  const { loggedInUser } = useAuth();
+
+  useEffect(() => {
+    !loggedInUser && router.push('/login');
+  }, [loggedInUser, router]);
+
   return (
     <div>
       <Head>
