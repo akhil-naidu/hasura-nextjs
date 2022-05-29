@@ -1,29 +1,15 @@
 import React from 'react';
 import IndividualTask from './IndividualTask';
 
-const data = [
-  {
-    id: 1,
-    task: 'Learn ReactJS',
-    completed: false,
-  },
-  {
-    id: 2,
-    task: 'Learn NextJS',
-    completed: false,
-  },
-  {
-    id: 3,
-    task: 'Learn Hasura',
-    completed: false,
-  },
-];
+import { useTodoContext } from '@/utils/context/todo/TodoContext';
 
 const DisplayAllTasks = () => {
+  const { data } = useTodoContext();
+
   return (
     <>
       {data.map((todo) => (
-        <IndividualTask key={todo.id} task={todo.task} />
+        <IndividualTask key={todo.id} todo={todo} />
       ))}
     </>
   );

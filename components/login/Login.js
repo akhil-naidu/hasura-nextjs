@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import {
   Button,
   Heading,
@@ -18,13 +17,12 @@ import { useAuth } from '@/utils/context/AuthContext';
 import { CreateUserGQL } from '@/graphql/user';
 
 const Login = () => {
-  const router = useRouter();
   const [showSignup, setShowSignup] = useState(false);
 
   const [createUserMutationResult, createUserMutation] =
     useMutation(CreateUserGQL);
 
-  const { register, login, loggedInUser } = useAuth();
+  const { login } = useAuth();
 
   const registerUserCustomAction = async (email, password) => {
     const variables = { credentials: { email, password } };
@@ -74,9 +72,32 @@ const Login = () => {
     actions.resetForm();
   };
 
-  useEffect(() => {
-    loggedInUser && router.push('/');
-  }, [loggedInUser, router]);
+  const allFields = [
+    {
+      id: 1,
+      label: 'Email',
+      placeholder: 'Enter your Email address',
+      type: 'email',
+      name: 'email',
+      showInLogin: true,
+    },
+    {
+      id: 2,
+      label: 'Password',
+      placeholder: 'Enter your Password',
+      type: 'password',
+      name: 'password',
+      showInLogin: true,
+    },
+    {
+      id: 3,
+      label: 'Confirm Password',
+      placeholder: 'Confirm your Password',
+      type: 'password',
+      name: 'confirmPassword',
+      showInLogin: false,
+    },
+  ];
 
   return (
     <Container
@@ -94,28 +115,16 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <VStack spacing='5' py={{ base: '4' }}>
               <Heading>{showSignup ? 'Signup' : 'Login'}</Heading>
-              <FormikInput
-                label='Email'
-                name='email'
-                type='email'
-                placeholder='Enter your email'
-              />
 
-              <FormikInput
-                label='Password'
-                name='password'
-                type='password'
-                placeholder='Enter your password'
-              />
-
-              {showSignup && (
-                <FormikInput
-                  label='Confirm Password'
-                  name='confirmPassword'
-                  type='password'
-                  placeholder='Confirm your password'
-                />
-              )}
+              {allFields.map(({ showInLogin, id, ...props }) => {
+                if (showSignup) {
+                  return <FormikInput key={id} {...props} />;
+                } else {
+                  if (showInLogin) {
+                    return <FormikInput key={id} {...props} />;
+                  }
+                }
+              })}
             </VStack>
 
             <HStack justify='space-between'>

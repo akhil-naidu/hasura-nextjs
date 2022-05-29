@@ -13,6 +13,9 @@ const FrontPage = () => {
               href={'/login'}
             >{`Feature One => Login and Signup form`}</Link>
           </li>
+          <li>
+            <Link href={'/todo'}>{`Feature Two => ToDo App`}</Link>
+          </li>
         </ul>
       </VStack>
     </Container>
