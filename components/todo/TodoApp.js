@@ -8,15 +8,7 @@ import DisplayAllTasks from './DisplayAllTasks';
 import { useTodoContext } from '@/utils/context/todo/TodoContext';
 
 const TodoApp = () => {
-  const { data } = useTodoContext();
-
-  const initialValues = {
-    task: '',
-  };
-
-  const validationSchema = yup.object().shape({
-    task: yup.string().required('Task cannot be empty'),
-  });
+  const { data, allFields, initialValues, validationSchema } = useTodoContext();
 
   const onSubmit = (values, actions) => {
     console.log(values);
@@ -37,11 +29,9 @@ const TodoApp = () => {
               className='rounded-md bg-slate-100 p-2 shadow-md md:p-4 lg:p-12'
               align='initial'
             >
-              <FormikInput
-                name='task'
-                type='text'
-                placeholder='Enter your Task'
-              />
+              {allFields.map(({ id, label, ...props }) => (
+                <FormikInput key={id} {...props} />
+              ))}
               <Button
                 w={48}
                 colorScheme='blue'
