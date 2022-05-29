@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -15,7 +15,7 @@ import { useMutation } from 'urql';
 import FormikInput from '@/components/shared/FormikInput';
 
 import { useAuth } from '@/utils/context/AuthContext';
-import { CreateUserGQL, LoginUserGQL, UserProfileGQL } from '@/graphql/user';
+import { CreateUserGQL } from '@/graphql/user';
 
 const Login = () => {
   const router = useRouter();
@@ -23,18 +23,22 @@ const Login = () => {
 
   const [createUserMutationResult, createUserMutation] =
     useMutation(CreateUserGQL);
-  const [loginUserMutationResult, loginUserMutation] =
-    useMutation(LoginUserGQL);
 
-  const { logout, loggedInUser, setLoggedInUser } = useAuth();
-  // For registration on user I can directly use the register function from the useAuth() hook,
-  // But that only creates an user in the firebase but not in my Hasura database
-  // So I created an Hasura Action, called createUser which triggers the NextJS function createUser
-  // The createUser Hasura actions return us the user information, by which I like to create an user in Hasura database
+  const { register, login, loggedInUser } = useAuth();
 
-  if (loggedInUser?.email) {
-    router.push('/');
-  }
+  const registerUserCustomAction = async (email, password) => {
+    const variables = { credentials: { email, password } };
+
+    try {
+      const { data } = await createUserMutation(variables);
+      console.log(data);
+
+      // send email verification
+      // display a screen to verify his email address
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const initialValues = {
     email: '',
@@ -61,44 +65,18 @@ const Login = () => {
       : {}),
   });
 
-  const registerUserCustomAction = async (email, password) => {
-    const variables = { credentials: { email, password } };
-
-    try {
-      const { data } = await createUserMutation(variables);
-      console.log(data);
-
-      // send email verification
-      // display a screen to verify his email address
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const loginUserCustomAction = async (email, password) => {
-    window.localStorage.clear();
-
-    try {
-      const variablesForUserLogin = { credentials: { email, password } };
-      const { data: loginResult } = await loginUserMutation(
-        variablesForUserLogin,
-      );
-
-      window.localStorage.setItem('accessToken', loginResult.login.accessToken);
-      window.localStorage.setItem('uid', loginResult.login.uid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const onSubmit = (values, actions) => {
     const { email, password } = values;
     showSignup
       ? registerUserCustomAction(email, password)
-      : loginUserCustomAction(email, password);
+      : login(email, password);
 
     actions.resetForm();
   };
+
+  useEffect(() => {
+    loggedInUser && router.push('/');
+  }, [loggedInUser, router]);
 
   return (
     <Container
