@@ -6,5 +6,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'), // Now you can use the class `prose` to apply typography
+  ],
 };
