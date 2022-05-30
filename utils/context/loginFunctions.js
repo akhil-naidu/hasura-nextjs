@@ -34,7 +34,6 @@ const login = async (email, password, backend = false) => {
 const logout = async () => {
   try {
     await signOut(auth);
-    window.localStorage.removeItem('accessToken');
   } catch (error) {
     console.error(error);
   }
