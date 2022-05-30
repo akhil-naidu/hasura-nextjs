@@ -30,16 +30,8 @@ const TodoApp = () => {
         isClosable: true,
       });
 
-    // create a mutation to add this in dB
-
-    try {
-      const variables = { task: values.task };
-      const { data } = await addTodoMutation(variables);
-    } catch (error) {
-      console.log(error);
-    }
-
     if (editingTodo.status) {
+      // Update Existing ToDo
       const newTodoList = todoList.map((todo) => {
         if (todo.id === editingTodo.id) {
           return { ...todo, task: values.task };
@@ -53,12 +45,13 @@ const TodoApp = () => {
         id: null,
       });
     } else {
-      const addThisTodo = {
-        id: Date.now(),
-        task: values.task,
-        completed: false,
-      };
-      setTodoList([...todoList, addThisTodo]);
+      // Add New ToDO
+      try {
+        const variables = { task: values.task };
+        const { data } = await addTodoMutation(variables);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     await actions.resetForm();
