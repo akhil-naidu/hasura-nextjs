@@ -25,9 +25,9 @@ const Login = () => {
   const { login } = useAuth();
 
   const registerUserCustomAction = async (email, password) => {
-    const variables = { credentials: { email, password } };
-
     try {
+      const variables = { credentials: { email, password } };
+
       const { data } = await createUserMutation(variables);
       console.log(data);
 

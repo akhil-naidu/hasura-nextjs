@@ -5,7 +5,6 @@ const CreateUserGQL = gql`
     create_user(credentials: $credentials) {
       id
       email
-      displayName
     }
   }
 `;
