@@ -2,10 +2,15 @@ import { IconButton, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 import { MdDeleteForever, MdEdit, MdOutlineDoneAll } from 'react-icons/md';
 import { useField } from 'formik';
+import { useMutation } from 'urql';
 
 import { useTodoContext } from '@/utils/context/todo/TodoContext';
+import { DeleteTodoGQL } from '@/graphql/todo';
 
 const IndividualTask = ({ todo }) => {
+  const [deleteTodoMutationResult, deleteTodoMutation] =
+    useMutation(DeleteTodoGQL);
+
   const { todoList, setTodoList, editingTodo, setEditingTodo } =
     useTodoContext();
 
@@ -20,8 +25,12 @@ const IndividualTask = ({ todo }) => {
     setValue(todo.task);
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
     const newTodoList = todoList.filter((todo) => todo.id !== id);
+
+    const variables = { id };
+    const { data } = await deleteTodoMutation(variables);
+    console.log(data);
 
     setTodoList(newTodoList);
   };

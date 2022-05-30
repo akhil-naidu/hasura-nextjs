@@ -1,13 +1,17 @@
 import React from 'react';
 import { Button, Container, HStack, useToast } from '@chakra-ui/react';
 import { Formik } from 'formik';
+import { useMutation } from 'urql';
 
 import FormikInput from '../shared/FormikInput';
 import DisplayAllTasks from './DisplayAllTasks';
 import { useTodoContext } from '@/utils/context/todo/TodoContext';
+import { AddTodoGQL } from '@/graphql/todo';
 
 const TodoApp = () => {
   const toast = useToast();
+  const [addTodoMutationResult, addTodoMutation] = useMutation(AddTodoGQL);
+
   const {
     todoList,
     setTodoList,
@@ -27,6 +31,13 @@ const TodoApp = () => {
       });
 
     // create a mutation to add this in dB
+
+    try {
+      const variables = { task: values.task };
+      const { data } = await addTodoMutation(variables);
+    } catch (error) {
+      console.log(error);
+    }
 
     if (editingTodo.status) {
       const newTodoList = todoList.map((todo) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import * as yup from 'yup';
 import { useQuery } from 'urql';
 
-import { getAllTodosGQL } from '@/graphql/todo';
+import { GetAllTodosGQL } from '@/graphql/todo';
 
 const todoContext = createContext();
 
@@ -12,7 +12,7 @@ export const useTodoContext = () => {
 
 const TodoContextProvider = ({ children }) => {
   const [allTodos, getAllTodos] = useQuery({
-    query: getAllTodosGQL,
+    query: GetAllTodosGQL,
   });
 
   const [todoList, setTodoList] = useState([]);
@@ -60,27 +60,7 @@ const TodoContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // const data = [
-    //   {
-    //     id: 1,
-    //     task: 'Learn ReactJS',
-    //     completed: false,
-    //   },
-    //   {
-    //     id: 2,
-    //     task: 'Learn NextJS',
-    //     completed: false,
-    //   },
-    //   {
-    //     id: 3,
-    //     task: 'Learn Hasura',
-    //     completed: false,
-    //   },
-    // ];
-
     const { data, fetching, error } = allTodos;
-
-    console.log(data, fetching, error);
 
     if (data) {
       setTodoList(data.todos);

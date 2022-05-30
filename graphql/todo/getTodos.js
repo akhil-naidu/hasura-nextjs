@@ -1,6 +1,6 @@
 import { gql } from 'urql';
 
-const getAllTodosGQL = gql`
+const GetAllTodosGQL = gql`
   query getTodos {
     todos(order_by: { created_at: asc }) {
       id
@@ -10,4 +10,4 @@ const getAllTodosGQL = gql`
   }
 `;
 
-export default getAllTodosGQL;
+export default GetAllTodosGQL;
