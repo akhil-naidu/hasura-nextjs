@@ -6,11 +6,13 @@ import { useMutation } from 'urql';
 import FormikInput from '../shared/FormikInput';
 import DisplayAllTasks from './DisplayAllTasks';
 import { useTodoContext } from '@/utils/context/todo/TodoContext';
-import { AddTodoGQL } from '@/graphql/todo';
+import { AddTodoGQL, UpdateTodoGQL } from '@/graphql/todo';
 
 const TodoApp = () => {
   const toast = useToast();
   const [addTodoMutationResult, addTodoMutation] = useMutation(AddTodoGQL);
+  const [updateTodoMutationResult, updateTodoMutation] =
+    useMutation(UpdateTodoGQL);
 
   const {
     todoList,
@@ -32,14 +34,14 @@ const TodoApp = () => {
 
     if (editingTodo.status) {
       // Update Existing ToDo
-      const newTodoList = todoList.map((todo) => {
-        if (todo.id === editingTodo.id) {
-          return { ...todo, task: values.task };
-        }
-        return todo;
-      });
+      const variables = { id: editingTodo.id, task: values.task };
 
-      setTodoList(newTodoList);
+      try {
+        const { data } = await updateTodoMutation(variables);
+      } catch (error) {
+        console.log(error);
+      }
+
       setEditingTodo({
         status: false,
         id: null,
