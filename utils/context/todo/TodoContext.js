@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import * as yup from 'yup';
 
 const todoContext = createContext();
@@ -8,23 +8,11 @@ export const useTodoContext = () => {
 };
 
 const TodoContextProvider = ({ children }) => {
-  const data = [
-    {
-      id: 1,
-      task: 'Learn ReactJS',
-      completed: false,
-    },
-    {
-      id: 2,
-      task: 'Learn NextJS',
-      completed: false,
-    },
-    {
-      id: 3,
-      task: 'Learn Hasura',
-      completed: false,
-    },
-  ];
+  const [todoList, setTodoList] = useState([]);
+  const [editingTodo, setEditingTodo] = useState({
+    status: false,
+    id: null,
+  });
 
   const adminData = {
     allFields: [
@@ -49,18 +37,42 @@ const TodoContextProvider = ({ children }) => {
     },
   };
 
-  const arrayOfValidations = adminData.allFields.map(({ name }) => ({
-    [name]: yup.string().required(adminData.moreInfo[`${name}`].required),
-  }));
+  // const arrayOfValidations = adminData.allFields.map(({ name }) => ({
+  //   [name]: yup.string().required(adminData.moreInfo[`${name}`].required),
+  // }));
 
-  const validationSchema = yup.object().shape(...arrayOfValidations);
+  // const validationSchema = yup.object().shape(...arrayOfValidations);
 
   const value = {
-    data,
+    todoList,
+    setTodoList,
+    editingTodo,
+    setEditingTodo,
     ...adminData,
-    validationSchema,
+    // validationSchema,
   };
 
+  useEffect(() => {
+    const data = [
+      {
+        id: 1,
+        task: 'Learn ReactJS',
+        completed: false,
+      },
+      {
+        id: 2,
+        task: 'Learn NextJS',
+        completed: false,
+      },
+      {
+        id: 3,
+        task: 'Learn Hasura',
+        completed: false,
+      },
+    ];
+
+    setTodoList(data);
+  }, []);
   return <todoContext.Provider value={value}>{children}</todoContext.Provider>;
 };
 

@@ -4,11 +4,11 @@ import IndividualTask from './IndividualTask';
 import { useTodoContext } from '@/utils/context/todo/TodoContext';
 
 const DisplayAllTasks = () => {
-  const { data } = useTodoContext();
+  const { todoList } = useTodoContext();
 
   return (
     <>
-      {data.map((todo) => (
+      {todoList.map((todo) => (
         <IndividualTask key={todo.id} todo={todo} />
       ))}
     </>

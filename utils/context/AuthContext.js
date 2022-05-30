@@ -4,6 +4,7 @@ import { HStack, Button } from '@chakra-ui/react';
 
 import { auth } from '@/utils/firebase';
 import { register, login, logout } from '@/utils/context/loginFunctions';
+import Link from 'next/link';
 
 const AuthContext = createContext();
 
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={value}>
       {loggedInUser && (
         <HStack justify='space-between'>
-          <p>{loggedInUser?.email}</p>
+          <Link href='/'>{loggedInUser?.email}</Link>
           <Button onClick={() => logout()}>Sign Out</Button>
         </HStack>
       )}
