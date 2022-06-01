@@ -44,28 +44,20 @@ const TodoContextProvider = ({ children }) => {
     },
   };
 
-  // const arrayOfValidations = adminData.allFields.map(({ name }) => ({
-  //   [name]: yup.string().required(adminData.moreInfo[`${name}`].required),
-  // }));
-
-  // const validationSchema = yup.object().shape(...arrayOfValidations);
-
   const value = {
     todoList,
     setTodoList,
     editingTodo,
     setEditingTodo,
     ...adminData,
-    // validationSchema,
   };
 
   useEffect(() => {
-    const { data, fetching, error } = allTodos;
-
-    if (data) {
-      setTodoList(data.todos);
+    if (!allTodos.fetching) {
+      setTodoList(allTodos.data.todos);
     }
   }, [allTodos]);
+
   return <todoContext.Provider value={value}>{children}</todoContext.Provider>;
 };
 

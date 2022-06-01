@@ -50,7 +50,10 @@ const TodoApp = () => {
       // Add New ToDO
       try {
         const variables = { task: values.task };
+
         const { data } = await addTodoMutation(variables);
+
+        setTodoList([...todoList, data.insert_todos_one]);
       } catch (error) {
         console.log(error);
       }
