@@ -28,6 +28,9 @@ const CounterWithZustand = () => {
 const CounterWithZustandValue = () => {
   console.log('Triggered the nested Zustand child, counter');
   const zustandCount = useCounterStore((state) => state.count);
+  const zustandActions = useCounterStore((state) => state.actions);
+
+  console.log('Displaying Zustand Actions', zustandActions());
   return <p>{zustandCount}</p>;
 };
 
@@ -67,25 +70,30 @@ const SchoolStrength = () => {
       </VStack>
       <div>
         <pre>{`
-          import create from 'zustand';
-          import produce from 'immer';
+import create from 'zustand';
+import produce from 'immer';
 
-          const useCounterStore = create((set) => ({
-            count: 0,
-            darkTheme: true,
-            schoolStrength: { school: { strength: 20 } },
-            increment: () => set((state) => ({ count: state.count + 10 })),
-            decrement: () => set((state) => ({ count: state.count - 10 })),
-            toggleTheme: () => set((state) => ({ darkTheme: !state.darkTheme })),
-            addNewStudent: () =>
-              set(
-                produce((state) => {
-                  state.schoolStrength.school.strength += 1;
-                }),
-              ),
-          }));
+const useCounterStore = create((set, get) => ({
+  count: 0,
+  darkTheme: true,
+  schoolStrength: { school: { strength: 20 } },
+  increment: () => set((state) => ({ count: state.count + 10 })),
+  decrement: () => set((state) => ({ count: state.count - 10 })),
+  toggleTheme: () => set((state) => ({ darkTheme: !state.darkTheme })),
+  actions: () => {
+    const count = get().count;
+    return count;
+  },
+  addNewStudent: () =>
+    set(
+      produce((state) => {
+        state.schoolStrength.school.strength += 1;
+      }),
+    ),
+}));
 
-          export default useCounterStore;
+export default useCounterStore;
+
 
         `}</pre>
       </div>
