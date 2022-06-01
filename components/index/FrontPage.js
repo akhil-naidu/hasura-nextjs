@@ -16,6 +16,11 @@ const FrontPage = () => {
           <li>
             <Link href={'/todo'}>{`Feature Two => ToDo App`}</Link>
           </li>
+          <li>
+            <Link
+              href={'/counter'}
+            >{`Feature Three => Store Based State Management`}</Link>
+          </li>
         </ul>
       </VStack>
     </Container>
