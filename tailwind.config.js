@@ -8,5 +8,9 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'), // Now you can use the class `prose` to apply typography
+    require('daisyui'),
   ],
+  daisyui: {
+    themes: ['winter'],
+  },
 };
