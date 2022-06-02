@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import Login from '@/components/login/Login';
-import { useAuth } from '@/utils/context/AuthContext';
+import { useAuthStore } from '@/utils/store';
 
 const LoginIndex = () => {
   const router = useRouter();
-  const { loggedInUser } = useAuth();
+  const loggedInUser = useAuthStore((state) => state.loggedInUser);
 
   useEffect(() => {
     loggedInUser && router.push('/');

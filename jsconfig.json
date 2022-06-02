@@ -4,8 +4,7 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/utils/*": ["utils/*"],
-      "@/graphql/*": ["graphql/*"],
-      "@/store/*": ["store/*"]
+      "@/graphql/*": ["graphql/*"]
     }
   }
 }

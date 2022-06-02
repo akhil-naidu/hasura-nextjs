@@ -13,7 +13,7 @@ import { useMutation } from 'urql';
 
 import FormikInput from '@/components/shared/FormikInput';
 
-import { useAuth } from '@/utils/context/AuthContext';
+import { useAuthStore } from '@/utils/store';
 import { CreateUserGQL } from '@/graphql/user';
 
 const Login = () => {
@@ -22,7 +22,7 @@ const Login = () => {
   const [createUserMutationResult, createUserMutation] =
     useMutation(CreateUserGQL);
 
-  const { login } = useAuth();
+  const login = useAuthStore((state) => state.login);
 
   const registerUserCustomAction = async (email, password) => {
     try {

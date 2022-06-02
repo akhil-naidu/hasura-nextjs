@@ -1,17 +1,25 @@
-import { useEffect, useState } from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, HStack, Button } from '@chakra-ui/react';
+import Link from 'next/link';
 
 import '../styles/globals.css';
-import { AuthProvider } from '@/utils/context/AuthContext';
+import { URQLProvider } from '@/utils/URQLClient';
+import { useAuthStore } from '@/utils/store';
 
 const MyApp = ({ Component, pageProps }) => {
+  const loggedInUser = useAuthStore((state) => state.loggedInUser);
+  const logout = useAuthStore((state) => state.logout);
+
   return (
     <ChakraProvider>
-      {/* maybe find some better logic other than this */}
-
-      <AuthProvider>
+      <URQLProvider>
+        {loggedInUser && (
+          <HStack justify='space-between'>
+            <Link href='/'>{loggedInUser?.email}</Link>
+            <Button onClick={() => logout()}>Sign Out</Button>
+          </HStack>
+        )}
         <Component {...pageProps} />
-      </AuthProvider>
+      </URQLProvider>
     </ChakraProvider>
   );
 };
