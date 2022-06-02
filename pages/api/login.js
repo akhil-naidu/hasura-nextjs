@@ -1,4 +1,4 @@
-import { login } from '@/utils/context/loginFunctions';
+import { login } from '@/utils/store/authStoreFunctions';
 
 const userLogin = async (req, res) => {
   const { email, password } = req.body.input.credentials;
