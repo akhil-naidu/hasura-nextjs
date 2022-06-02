@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { useAuthStore } from '@/utils/store';
 
@@ -17,7 +18,12 @@ const UserProfileMenu = () => {
     <div className='dropdown-end dropdown '>
       <label tabIndex='0' className='avatar btn btn-ghost btn-circle'>
         <div className='w-10 rounded-full'>
-          <img src='https://api.lorem.space/image/face?hash=33791' />
+          <Image
+            src='https://api.lorem.space/image/face?hash=33791'
+            alt='Profile Picture of the User'
+            width={500}
+            height={500}
+          />
         </div>
       </label>
       <ul
