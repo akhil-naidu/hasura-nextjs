@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Container, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 
