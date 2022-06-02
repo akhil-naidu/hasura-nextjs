@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Button, HStack, VStack } from '@chakra-ui/react';
 
-import useCounterStore from './store';
+import { useCounterStore } from '@/utils/store';
 
 const CounterWithZustand = () => {
   console.log('counter with Zustand');
