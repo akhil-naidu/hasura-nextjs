@@ -9,7 +9,7 @@ import {
 } from 'urql';
 
 import { auth } from '@/utils/firebase';
-import { useAuthStore } from '@/utils/store';
+import { useAuthStore } from './store';
 
 export const URQLProvider = ({ children }) => {
   const setLoggedInUser = useAuthStore((state) => state.setLoggedInUser);
