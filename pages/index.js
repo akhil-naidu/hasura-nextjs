@@ -10,8 +10,7 @@ export default function Home() {
   const { loggedInUser } = useAuth();
 
   useEffect(() => {
-    const accessToken = window.localStorage.getItem('accessToken');
-    if (!accessToken) !loggedInUser && router.push('/login');
+    !loggedInUser && router.push('/login');
   }, [loggedInUser, router]);
 
   return (

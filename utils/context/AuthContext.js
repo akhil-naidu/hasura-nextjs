@@ -1,10 +1,18 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
 import { HStack, Button } from '@chakra-ui/react';
+import {
+  Provider,
+  cacheExchange,
+  createClient,
+  dedupExchange,
+  fetchExchange,
+} from 'urql';
 
 import { auth } from '@/utils/firebase';
-import { register, login, logout } from '@/utils/context/loginFunctions';
-import Link from 'next/link';
+// import { register, login, logout } from '@/utils/context/loginFunctions';
+import { useAuthStore } from '../store';
 
 const AuthContext = createContext();
 
@@ -13,7 +21,12 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  // const [loggedInUser, setLoggedInUser] = useState(null);
+  const register = useAuthStore((state) => state.register);
+  const login = useAuthStore((state) => state.login);
+  const logout = useAuthStore((state) => state.logout);
+  const setLoggedInUser = useAuthStore((state) => state.setLoggedInUser);
+  const loggedInUser = useAuthStore((state) => state.loggedInUser);
 
   const value = {
     register,
@@ -22,27 +35,34 @@ export const AuthProvider = ({ children }) => {
     loggedInUser,
   };
 
+  const client = createClient({
+    url: process.env.NEXT_PUBLIC_HASURA_URL,
+    exchanges: [dedupExchange, cacheExchange, fetchExchange],
+    fetchOptions: () => {
+      const token = loggedInUser?.accessToken;
+      return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    },
+  });
+
   useEffect(() => {
-    // window.localStorage.removeItem('accessToken');
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      currentUser?.accessToken
-        ? window.localStorage.setItem('accessToken', currentUser?.accessToken)
-        : window.localStorage.removeItem('accessToken');
       setLoggedInUser(currentUser);
     });
 
     return unsubscribe;
-  }, []);
+  }, [setLoggedInUser]);
 
   return (
     <AuthContext.Provider value={value}>
-      {loggedInUser && (
-        <HStack justify='space-between'>
-          <Link href='/'>{loggedInUser?.email}</Link>
-          <Button onClick={() => logout()}>Sign Out</Button>
-        </HStack>
-      )}
-      {children}
+      <Provider value={client}>
+        {loggedInUser && (
+          <HStack justify='space-between'>
+            <Link href='/'>{loggedInUser?.email}</Link>
+            <Button onClick={() => logout()}>Sign Out</Button>
+          </HStack>
+        )}
+        {children}
+      </Provider>
     </AuthContext.Provider>
   );
 };

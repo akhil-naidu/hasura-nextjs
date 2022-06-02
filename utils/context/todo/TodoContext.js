@@ -1,5 +1,4 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import * as yup from 'yup';
 import { useQuery } from 'urql';
 
 import { GetAllTodosGQL } from '@/graphql/todo';
@@ -53,7 +52,7 @@ const TodoContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!allTodos.fetching) {
+    if (!allTodos.fetching && !allTodos.error) {
       setTodoList(allTodos.data.todos);
     }
   }, [allTodos]);
