@@ -3,7 +3,6 @@ import Link from 'next/link';
 
 import '../styles/globals.css';
 import { URQLProvider } from '@/utils/URQLClient';
-import { useAuthStore } from '@/utils/store';
 import Navbar from '@/components/shared/Navbar';
 
 const MyApp = ({ Component, pageProps }) => {
