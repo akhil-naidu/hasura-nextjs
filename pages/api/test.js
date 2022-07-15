@@ -1,5 +1,5 @@
 export default function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method === 'POST') {
     const body = JSON.parse(req.body);
     console.log('without parsing', req.body);
     console.log('with parsing', body);
