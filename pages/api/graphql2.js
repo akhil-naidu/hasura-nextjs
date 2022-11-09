@@ -26,6 +26,7 @@ const resolvers = {
         id: uid,
         email,
         displayName,
+        date: new Date(),
       };
     },
   },
