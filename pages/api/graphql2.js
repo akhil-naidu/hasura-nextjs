@@ -10,6 +10,7 @@ const typeDefs = gql`
     id: String
     email: String
     displayName: String
+    date: String
   }
 
   type Query {
@@ -26,7 +27,7 @@ const resolvers = {
         id: uid,
         email,
         displayName,
-        date: new Date(),
+        date: `${new Date()}`,
       };
     },
   },
