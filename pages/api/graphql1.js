@@ -13,13 +13,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    firebase_user_profile(id: String): UserProfile
+    firebase_user_profile_1(id: String): UserProfile
   }
 `;
 
 const resolvers = {
   Query: {
-    firebase_user_profile: async (_, args) => {
+    firebase_user_profile_1: async (_, args) => {
       if (!args.id) return null;
       const { uid, email, displayName } = await admin.auth().getUser(args.id);
       return {
@@ -53,7 +53,7 @@ const startServer = server.start();
 const handler = async (req, res) => {
   await startServer;
   await server.createHandler({
-    path: '/api/graphql',
+    path: '/api/graphql1',
   })(req, res);
 };
 
